@@ -2,7 +2,8 @@
 
 ![Uploading image.png…]()
 
-
+contract address Bakarat game: 0x0841dEF9362c205a5F59A5e232d925fC7A8d8537
+MockRandomizer: 0xA93f25b14A2684718a2eF697b070c192C3674b04
 We built a fully-specced 6-deck Baccarat game on Astar zkEVM to show how we can leverage state-of-the-art rollup technology to create transparent, verifiable and unruggable games on the blockchain!
 
 
