@@ -1,41 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BakaChain
 
-## Getting Started
+![Uploading image.png…]()
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+We built a fully-specced 6-deck Baccarat game on Astar zkEVM to show how we can leverage state-of-the-art rollup technology to create transparent, verifiable and unruggable games on the blockchain!
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+The Baccarat contract is written in pure Solidity, and only costs ~110k gas to execute a round of Baccarat. That makes it insanely cheap for users to play (or for operators to sponsor). This is possible through our (mis)use of cryptographic algorithms that allows us to shuffle cards without touching storage slots. No need for fancy ZK here! ;)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+The contract also keeps track of user wagers such that the operator cannot withdraw anything that isn't part of the operator's own balance or profits. Unruggable!
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-# ethseoul
+On our frontend, we create temporary session wallets that users deposit funds into. They only deposit the amount that they want to play with. Doing this allows us to programmatically submit bets without having to further prompt the user to sign transactions; thus giving users a really smooooooth experience, just like offchain apps.
