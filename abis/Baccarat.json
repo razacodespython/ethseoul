@@ -1,0 +1,882 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "randomiser_",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minBet_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxBet_",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "numDecks_",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidInputs",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "BalanceToppedUp",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "BalanceWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "whomst",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "enum IBaccarat.BetKind",
+        "name": "betKind",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "BetPlaced",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "enum IBaccarat.Winner",
+        "name": "winner",
+        "type": "uint8"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct IBaccarat.Card[]",
+        "name": "player",
+        "type": "tuple[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct IBaccarat.Card[]",
+        "name": "banker",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "GameFinalised",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
+      }
+    ],
+    "name": "GameStarted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "whomst",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "enum IBaccarat.BetKind",
+        "name": "betKind",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "commission",
+        "type": "uint256"
+      }
+    ],
+    "name": "WinningsClaimed",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IBaccarat.BetKind",
+        "name": "betKind",
+        "type": "uint8"
+      }
+    ],
+    "name": "bet",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "enum IBaccarat.BetKind",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "bets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "whomst",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IBaccarat.BetKind",
+        "name": "betKind",
+        "type": "uint8"
+      }
+    ],
+    "name": "claimWinnings",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "randomSeed",
+        "type": "uint256"
+      }
+    ],
+    "name": "computeHands",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IBaccarat.Card[]",
+        "name": "player",
+        "type": "tuple[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IBaccarat.Card[]",
+        "name": "banker",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "playerScore",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bankerScore",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      }
+    ],
+    "name": "deal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "deck",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "exists",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint8",
+        "name": "value",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum IBaccarat.Rank",
+        "name": "rank",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum IBaccarat.Suit",
+        "name": "suit",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      }
+    ],
+    "name": "games",
+    "outputs": [
+      {
+        "internalType": "enum IBaccarat.GameState",
+        "name": "state",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum IBaccarat.Winner",
+        "name": "winner",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bool",
+        "name": "hasPairs",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getHouseBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getResults",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum IBaccarat.GameState",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Winner",
+            "name": "winner",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bool",
+            "name": "hasPairs",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct IBaccarat.Game",
+        "name": "game",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IBaccarat.Card[]",
+        "name": "player",
+        "type": "tuple[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IBaccarat.Card[]",
+        "name": "banker",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "playerScore",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "bankerScore",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IBaccarat.Card",
+        "name": "left",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "value",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Rank",
+            "name": "rank",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum IBaccarat.Suit",
+            "name": "suit",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct IBaccarat.Card",
+        "name": "right",
+        "type": "tuple"
+      }
+    ],
+    "name": "isPair",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lockedWagersBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "maxBet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minBet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numDecks",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      }
+    ],
+    "name": "randomSeeds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "randomSeed",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "randomiser",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "randomWords",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "receiveRandomWords",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
+      }
+    ],
+    "name": "requestToGame",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "gameId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IBaccarat.BetKind",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "sumWagers",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "sum",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "topup",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
